@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: account-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/account_db}
+    username: ${DB_USERNAME:account}
+    password: ${DB_PASSWORD:account}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8081}
+
+security:
+  jwt:
+    issuer: ${JWT_ISSUER:account-service}
+    access-token-ttl: ${JWT_ACCESS_TOKEN_TTL:PT15M}
+    # Set both to a file:/... or classpath:... PEM location to pin the signing key.
+    # Left blank, an ephemeral RSA key pair is generated at startup (local dev only).
+    private-key-location: ${JWT_PRIVATE_KEY_LOCATION:}
+    public-key-location: ${JWT_PUBLIC_KEY_LOCATION:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    com.alaa.banking: INFO
