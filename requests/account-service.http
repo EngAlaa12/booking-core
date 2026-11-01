@@ -1,0 +1,72 @@
+### Variables
+@baseUrl = http://localhost:8081
+@email = qa-{{$uuid}}@example.com
+@password = s3cret-password
+
+### 1. Health check
+GET {{baseUrl}}/actuator/health
+
+### 2. Register a new customer
+# Expect: 201 Created, body with id/email/status
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 3. Register the same email again
+# Expect: 409 Conflict
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 4. Register with invalid payload
+# Expect: 400 Bad Request
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "not-an-email",
+  "password": "short"
+}
+
+### 5. Login with correct credentials
+# Expect: 200 OK, body with accessToken/tokenType/expiresInSeconds
+# Copy the accessToken value into the @token variable below.
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 6. Login with wrong password
+# Expect: 401 Unauthorized
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "wrong-password"
+}
+
+### 7. Call protected endpoint without a token
+# Expect: 401 Unauthorized
+GET {{baseUrl}}/api/v1/auth/me
+
+### 8. Call protected endpoint with a valid token
+# Paste the accessToken from step 5 below.
+@token = PASTE_ACCESS_TOKEN_HERE
+
+GET {{baseUrl}}/api/v1/auth/me
+Authorization: Bearer {{token}}
+
+### 9. Fetch the public JWKS
+GET {{baseUrl}}/.well-known/jwks.json
