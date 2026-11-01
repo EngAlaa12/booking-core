@@ -186,7 +186,7 @@ below), so there's no secrets file to copy over for this stage.
 `account-service` reads configuration from environment variables, each with a
 working local default baked in
 ([`application.yml`](account-service/src/main/resources/application.yml)).
-There is no committed `.env` file; [`.env.example`](.env.example) documents
+There is no committed `.env` file; [`.env.example`](account-service/.env.example) documents
 the variables if you want to override any of them (e.g. point at a different
 database).
 
